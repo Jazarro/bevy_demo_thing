@@ -1,0 +1,6 @@
+(
+    texture: "level_select.png",
+    tile_size: (128., 128.),
+    columns: 2,
+    rows: 2,
+)

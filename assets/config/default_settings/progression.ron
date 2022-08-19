@@ -1,0 +1,9 @@
+(
+    current_level: 0,
+    levels: [
+        "kings_valley_0.ron",
+        "kings_valley_1.ron",
+        "kings_valley_2.ron",
+        "kings_valley_3.ron",
+    ],
+)

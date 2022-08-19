@@ -1,0 +1,6 @@
+(
+    texture: "spawner.png",
+    tile_size: (256., 384.),
+    columns: 2,
+    rows: 1,
+)

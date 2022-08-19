@@ -1,0 +1,6 @@
+(
+    texture: "player_anims.png",
+    tile_size: ( 256., 256. ),
+    columns: 5,
+    rows: 1,
+)

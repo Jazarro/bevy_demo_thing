@@ -1,0 +1,6 @@
+(
+    texture: "revolving_door.png",
+    tile_size: ( 256., 128. ),
+    columns: 2,
+    rows: 1,
+)

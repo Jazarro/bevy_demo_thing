@@ -1,0 +1,6 @@
+(
+    texture: "background03.png",
+    tile_size: (4096., 3072.),
+    columns: 1,
+    rows: 1,
+)

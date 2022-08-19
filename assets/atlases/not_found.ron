@@ -1,0 +1,6 @@
+(
+    texture: "not_found.png",
+    tile_size: (128., 128.),
+    columns: 1,
+    rows: 1,
+)

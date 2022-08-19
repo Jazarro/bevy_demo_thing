@@ -1,0 +1,6 @@
+(
+    texture: "ladder.png",
+    tile_size: ( 256., 128. ),
+    columns: 1,
+    rows: 1,
+)

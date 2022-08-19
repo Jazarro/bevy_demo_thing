@@ -1,0 +1,6 @@
+(
+    texture: "frame.png",
+    tile_size: (50., 50.),
+    columns: 1,
+    rows: 1,
+)

@@ -1,0 +1,6 @@
+(
+    texture: "tools.png",
+    tile_size: ( 256., 256. ),
+    columns: 4,
+    rows: 2,
+)

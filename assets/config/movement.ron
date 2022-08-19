@@ -1,0 +1,9 @@
+// Deserialises to a MovementConfig struct.
+(
+    player_speed: 10.0,
+    enemy_speed: 8.0,
+    jump_allowance: 0.1,
+    turn_allowance: 0.1,
+    map_cursor_move_high_cooldown:0.3,
+    map_cursor_move_low_cooldown:0.05,
+)
