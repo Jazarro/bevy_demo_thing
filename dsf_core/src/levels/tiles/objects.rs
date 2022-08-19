@@ -6,16 +6,7 @@ use crate::loading::assets::SpriteType;
 use crate::systems::motion::structs::pos::Pos;
 
 #[derive(Clone, Copy, Debug, Default, Deserialize, Serialize, Component)]
-pub struct Key {
-    pub pos: Pos,
-}
-
-impl Key {
-    #[must_use]
-    pub fn new(pos: Pos) -> Self {
-        Key { pos }
-    }
-}
+pub struct Key;
 
 #[derive(Clone, Copy, Debug, Default, Deserialize, Serialize, Component)]
 pub struct Tool {
@@ -35,12 +26,6 @@ impl Tool {
     }
 }
 
-/// All destructible entities must have this component, this is how we find and delete them.
-#[derive(Clone, Copy, Debug, Default, Deserialize, Serialize, Component)]
-pub struct Block {
-    pub pos: Pos,
-}
-
 /// A miniature version of every key is found on the exit door.
 #[derive(Clone, Copy, Debug, Default, Deserialize, Serialize, Component)]
 pub struct KeyDisplay {
@@ -58,8 +43,4 @@ impl KeyDisplay {
 
 /// The exit door.
 #[derive(Clone, Copy, Debug, Default, Deserialize, Serialize, Component)]
-pub struct ExitDoor {
-    // TODO: Not this
-    pub pos: Pos,
-    pub dimens: IVec2,
-}
+pub struct ExitDoor;

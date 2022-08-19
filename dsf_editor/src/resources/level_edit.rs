@@ -1,10 +1,11 @@
-use bevy::prelude::IVec2;
+use std::collections::{HashMap, HashSet};
+
 use dsf_core::levels::level_save::LevelSave;
 use dsf_core::levels::tiles::tile_defs::{TileDefinition, TileDefinitions};
 use dsf_core::levels::tiles::tilemap::{Tile, TileMap};
 use dsf_core::levels::world_bounds::WorldBounds;
+use dsf_core::systems::motion::structs::dimens::Dimens;
 use dsf_core::systems::motion::structs::pos::Pos;
-use std::collections::{HashMap, HashSet};
 
 /// The representation of a level in the level editor.
 #[derive(Debug, Default, Clone)]
@@ -64,8 +65,8 @@ impl LevelEdit {
         dry_run
             .to_be_added
             .drain(..)
-            .for_each(|(pos, key, dimensions)| {
-                self.tile_map.put_tile(&pos, key, dimensions);
+            .for_each(|(pos, dimens, key)| {
+                self.tile_map.put_tile(&pos, dimens, key);
                 self.dirty.insert(pos);
             });
     }
@@ -98,11 +99,11 @@ impl LevelEdit {
 
     /// Does a dry run to check what would happen if we added a new tile.
     fn check_add_tile(&self, pos: Pos, key: String, force_place: bool) -> PlaceTileDryRun {
-        let dimensions = self.get_tile_def(&key).dimens;
-        let obstructed = !self.bounds().encloses(&pos, &dimensions)
+        let dimens = self.get_tile_def(&key).dimens;
+        let obstructed = !self.bounds().encloses(&pos, &dimens)
             || (!force_place
-                && (0..dimensions.x).any(|x| {
-                    (0..dimensions.y).any(|y| {
+                && (0..dimens.x).any(|x| {
+                    (0..dimens.y).any(|y| {
                         self.tile_map
                             .get_tile(&Pos::new(pos.x + x, pos.y + y))
                             .is_some()
@@ -111,15 +112,15 @@ impl LevelEdit {
         if obstructed {
             PlaceTileDryRun::default()
         } else {
-            let to_be_removed = (0..dimensions.x)
-                .flat_map(|x| (0..dimensions.y).map(move |y| (x, y)))
+            let to_be_removed = (0..dimens.x)
+                .flat_map(|x| (0..dimens.y).map(move |y| (x, y)))
                 .filter_map(|(x, y)| {
                     self.tile_map
                         .get_actual_pos(&Pos::new(pos.x + x, pos.y + y))
                 })
                 .collect();
             PlaceTileDryRun {
-                to_be_added: vec![(pos, key, dimensions)],
+                to_be_added: vec![(pos, dimens, key)],
                 to_be_removed,
             }
         }
@@ -146,8 +147,8 @@ impl LevelEdit {
 #[derive(Debug, Default)]
 pub struct PlaceTileDryRun {
     /// The tiles that should be placed.
-    /// Is a collection of tuples: (tile_position_in_the_world, tile_def_key, tile_dimensions)
-    pub to_be_added: Vec<(Pos, String, IVec2)>,
+    /// Is a collection of tuples: (tile_position_in_the_world, tile_dimensions, tile_def_key)
+    pub to_be_added: Vec<(Pos, Dimens, String)>,
     /// The anchor-positions of all existing tiles that should be removed.
     pub to_be_removed: HashSet<Pos>,
 }

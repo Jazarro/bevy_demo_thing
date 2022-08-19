@@ -81,19 +81,18 @@ fn spawn_node(pos: &Pos, commands: &mut Commands, storage: &Res<AssetStorage>) {
 }
 
 fn create_indexed(pos: &Pos, storage: &Res<AssetStorage>, index: usize) -> SpriteSheetBundle {
-    let texture_atlas_handle = storage.get_atlas(&SpriteType::LevelSelect);
-    let transform = Transform::default()
-        .with_translation(Vec3::new(
+    SpriteSheetBundle {
+        texture_atlas: storage.get_atlas(&SpriteType::LevelSelect),
+        transform: Transform::from_xyz(
             pos.x as f32 + 0.5,
             pos.y as f32 + 0.5,
             DepthLayer::Blocks.z(),
-        ))
-        .with_scale(Vec3::new(1. / 128., 1. / 128., 1.));
-    let mut bundle = SpriteSheetBundle {
-        texture_atlas: texture_atlas_handle,
-        transform,
+        ),
+        sprite: TextureAtlasSprite {
+            index,
+            custom_size: Some(Vec2::new(1., 1.)),
+            ..default()
+        },
         ..default()
-    };
-    bundle.sprite.index = index;
-    bundle
+    }
 }

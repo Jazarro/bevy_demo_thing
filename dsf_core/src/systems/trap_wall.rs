@@ -1,38 +1,30 @@
 use bevy::prelude::*;
 
 use crate::audio::sound_event::SoundEvent;
-use crate::levels::load_level_system::load_transform;
-use crate::levels::tiles::objects::Block;
-use crate::levels::tiles::tile_defs::DepthLayer;
 use crate::levels::tiles::tilemap::TileMap;
 use crate::levels::world_bounds::WorldBounds;
-use crate::loading::assets::{AssetStorage, SoundType, SpriteType};
+use crate::loading::assets::{AssetStorage, SoundType};
+use crate::loading::entities::inflate::spawn_from_def;
+use crate::systems::motion::structs::coords::Coords;
+use crate::systems::motion::structs::dimens::Dimens;
 use crate::systems::motion::structs::player::Player;
 use crate::systems::motion::structs::pos::Pos;
-use crate::systems::motion::structs::steering::Steering;
 
 const COOLDOWN: f32 = 1.;
 
-#[derive(Component)]
+#[derive(Component, Default)]
 pub struct TrappedWall {
-    pub pos: Pos,
     /// Countdown to trigger the trap.
     pub timer: Option<Timer>,
 }
 
-impl TrappedWall {
-    pub fn new(pos: Pos) -> Self {
-        TrappedWall { pos, timer: None }
-    }
-}
-
 pub fn trigger_trap_walls(
     tile_map: Res<TileMap>,
-    query_player: Query<&Steering, With<Player>>,
-    mut query_wall: Query<&mut TrappedWall>,
+    query_player: Query<&Coords, With<Player>>,
+    mut query_wall: Query<(&mut TrappedWall, &Coords)>,
 ) {
-    if let Ok(steering) = query_player.get_single() {
-        let mut vec: Vec<Pos> = tiles_inside(steering, &tile_map.world_bounds)
+    if let Ok(player_coords) = query_player.get_single() {
+        let mut vec: Vec<Pos> = tiles_inside(player_coords, &tile_map.world_bounds)
             .iter()
             .filter(|pos| tile_map.get_tile(pos).map_or(false, |def| def.is_trapped()))
             .map(|trap_pos| {
@@ -50,9 +42,9 @@ pub fn trigger_trap_walls(
             .collect();
         vec.sort();
         vec.dedup();
-        for mut trap in query_wall
+        for (mut trap, _) in query_wall
             .iter_mut()
-            .filter(|trap| vec.contains(&trap.pos) && trap.timer.is_none())
+            .filter(|(trap, wall_coords)| vec.contains(&wall_coords.pos) && trap.timer.is_none())
         {
             trap.timer = Some(Timer::from_seconds(COOLDOWN, false));
         }
@@ -61,10 +53,10 @@ pub fn trigger_trap_walls(
 
 // TODO: This was copied almost verbatim from tools. Get rid of duplicate code.
 //          - It's also very similar to code in steering systems.
-fn tiles_inside(steering: &Steering, bounds: &WorldBounds) -> Vec<Pos> {
-    (0..steering.dimens.x)
-        .flat_map(|x| (0..steering.dimens.y).map(move |y| (x, y)))
-        .map(|(x_offset, y_offset)| Pos::new(steering.pos.x + x_offset, steering.pos.y + y_offset))
+fn tiles_inside(coords: &Coords, bounds: &WorldBounds) -> Vec<Pos> {
+    (0..coords.dimens.x)
+        .flat_map(|x| (0..coords.dimens.y).map(move |y| (x, y)))
+        .map(|(x_offset, y_offset)| Pos::new(coords.pos.x + x_offset, coords.pos.y + y_offset))
         .map(|pos| bounds.wrapped(&pos))
         .collect()
 }
@@ -75,40 +67,30 @@ pub fn trap_mechanism(
     storage: Res<AssetStorage>,
     mut tile_map: ResMut<TileMap>,
     mut audio: EventWriter<SoundEvent>,
-    mut query_trap: Query<(Entity, &mut TrappedWall)>,
-    query_player: Query<&Steering, With<Player>>,
+    mut query_trap: Query<(Entity, &mut TrappedWall, &Coords)>,
+    query_player: Query<&Coords, With<Player>>,
 ) {
     if let Ok(player) = query_player.get_single() {
         let next = query_trap
             .iter_mut()
-            .map(|(entity, mut trap)| {
+            .filter_map(|(entity, mut trap, coords)| {
                 if let Some(timer) = &mut trap.timer {
                     timer.tick(time.delta());
-                    if timer.finished() && !player.overlaps_pos(&trap.pos) {
+                    if timer.finished() && !player.overlaps_pos(&coords.pos) {
                         audio.send(SoundEvent::Sfx(SoundType::TrapWallCreated, false));
                         commands.entity(entity).despawn_recursive();
-                        commands
-                            .spawn_bundle(SpriteSheetBundle {
-                                texture_atlas: storage.get_atlas(&SpriteType::Blocks),
-                                transform: load_transform(
-                                    &trap.pos,
-                                    &IVec2::new(1, 1),
-                                    &DepthLayer::Blocks,
-                                ),
-                                sprite: TextureAtlasSprite {
-                                    index: 1,
-                                    ..default()
-                                },
-                                ..default()
-                            })
-                            .insert(Block { pos: trap.pos });
-                        tile_map.put_tile(&trap.pos, "Block2".to_string(), IVec2::new(1, 1));
-
+                        spawn_from_def(
+                            &mut commands,
+                            &storage,
+                            coords.pos,
+                            tile_map.tile_defs.get("Block2"),
+                        );
+                        tile_map.put_tile(&coords.pos, Dimens::new(1, 1), "Block2".to_string());
                         let there_is_another_one = tile_map
-                            .get_tile(&trap.pos.append_y(-1))
+                            .get_tile(&coords.pos.append_y(-1))
                             .map_or(false, |def| def.is_trapped());
                         if there_is_another_one {
-                            Some(trap.pos.append_y(-1))
+                            Some(coords.pos.append_y(-1))
                         } else {
                             None
                         }
@@ -119,11 +101,10 @@ pub fn trap_mechanism(
                     None
                 }
             })
-            .flatten()
             .collect::<Vec<Pos>>();
 
-        for (_, mut trap) in query_trap.iter_mut() {
-            if next.contains(&trap.pos) {
+        for (_, mut trap, coords) in query_trap.iter_mut() {
+            if next.contains(&coords.pos) {
                 trap.timer = Some(Timer::from_seconds(COOLDOWN, false));
             }
         }

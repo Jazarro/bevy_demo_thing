@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 use crate::systems::motion::structs::direction::Direction1D;
 
 /// SteeringMode influences max speeds, ability to jump, ability to move, etc.
-#[derive(Clone, Debug, Deserialize, Serialize, PartialEq)]
+#[derive(Deserialize, Serialize, Clone, Debug, PartialEq)]
 pub enum SteeringMode {
     /// Standard mode. There is flat ground beneath the entity and the entity can either move
     /// horizontally or initiate a jump.

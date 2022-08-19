@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 
 use crate::config::movement_config::MovementConfig;
+use crate::systems::motion::structs::coords::Coords;
 use crate::systems::motion::structs::direction::Direction1D;
 use crate::systems::motion::structs::player::Player;
 use crate::systems::motion::structs::steering::Steering;
@@ -8,7 +9,7 @@ use crate::systems::motion::structs::steering_intent::SteeringIntent;
 
 /// Sets the player intention to move.
 pub fn set_player_steering_intent(
-    mut query: Query<(&mut Player, &mut SteeringIntent, &Steering)>,
+    mut query: Query<(&mut Player, &mut SteeringIntent, &Steering, &Coords)>,
     keys: Res<Input<KeyCode>>,
     config: Res<MovementConfig>,
     time: Res<Time>,
@@ -21,9 +22,9 @@ pub fn set_player_steering_intent(
     let new_walk = Direction1D::from_input(left, right);
     let new_climb = Direction1D::from_input(down, up);
 
-    for (mut player, mut intent, steering) in query.iter_mut() {
+    for (mut player, mut intent, steering, coords) in query.iter_mut() {
         if let Some(target) = intent.forced_walk {
-            let direction = Direction1D::new((target.x - steering.pos.x) as f32);
+            let direction = Direction1D::new((target.x - coords.pos.x) as f32);
             intent.walk = direction;
             return;
         }

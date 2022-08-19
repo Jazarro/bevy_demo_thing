@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 use crate::levels::tiles::tile_defs::ToolType;
 
 /// The entity with this component is the player.
-#[derive(Clone, Copy, Debug, Default, Deserialize, Serialize, Component)]
+#[derive(Component, Deserialize, Serialize, Default, Copy, Clone, Debug)]
 pub struct Player {
     /// The tool currently equipped by the player.
     pub equipped: Option<ToolType>,
@@ -35,13 +35,13 @@ pub struct Player {
 }
 
 /// The entity with this component is a tool equipped by the player.
-#[derive(Clone, Copy, Debug, Default, Deserialize, Serialize, Component)]
+#[derive(Component, Deserialize, Serialize, Default, Copy, Clone, Debug)]
 pub struct EquippedTag;
 
 /// A debug entity that shows the player's current discrete position.
-#[derive(Clone, Copy, Debug, Default, Deserialize, Serialize, Component)]
+#[derive(Component, Deserialize, Serialize, Default, Copy, Clone, Debug)]
 pub struct DebugPosGhostTag;
 
 /// A debug entity that shows the player's destination.
-#[derive(Clone, Copy, Debug, Default, Deserialize, Serialize, Component)]
+#[derive(Component, Deserialize, Serialize, Default, Copy, Clone, Debug)]
 pub struct DebugSteeringGhostTag;

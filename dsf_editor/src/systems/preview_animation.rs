@@ -11,6 +11,6 @@ pub fn animate_previews(time: Res<Time>, mut query: Query<&mut Transform, With<P
                 * (time.seconds_since_startup() as f32 * consts::PI)
                     .sin()
                     .abs();
-        transform.scale = Vec3::new(scale_factor / 128., scale_factor / 128., 1.0);
+        transform.scale = Vec3::new(scale_factor, scale_factor, 1.0);
     }
 }

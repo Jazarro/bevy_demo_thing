@@ -13,14 +13,14 @@ pub fn setup_main_menu(
 ) {
     instruction.adventure = Some(get_adventures_dir().join("default.ron"));
 
-    commands.spawn_bundle(OrthographicCameraBundle::new_2d());
+    commands.spawn_bundle(Camera2dBundle::default());
     let buttons = vec![
         "Play".to_string(),
         "Level Editor".to_string(),
         "Settings".to_string(),
         "Exit".to_string(),
     ];
-    let container = commands.spawn_bundle(TransformBundle::default()).id();
+    let container = commands.spawn_bundle(SpatialBundle::default()).id();
     for i in 0..buttons.len() {
         add_btn(&mut commands, &assets, &buttons, i, container);
     }

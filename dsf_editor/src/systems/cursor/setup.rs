@@ -11,14 +11,10 @@ pub fn init_cursor(mut commands: Commands) {
         .insert_bundle(SpriteBundle {
             sprite: Sprite {
                 color: Color::rgba(0., 1., 0.25, 0.1),
-                custom_size: Some(Vec2::new(128., 128.)),
+                custom_size: Some(Vec2::new(1., 1.)),
                 ..default()
             },
-            transform: Transform::from_xyz(0., 0., DepthLayer::Cursor.z()).with_scale(Vec3::new(
-                1. / 128.,
-                1. / 128.,
-                1.,
-            )),
+            transform: Transform::from_xyz(0., 0., DepthLayer::Cursor.z()),
             ..default()
         })
         .insert(FocalPoint)
@@ -29,7 +25,7 @@ pub fn init_cursor(mut commands: Commands) {
         .insert_bundle(SpriteBundle {
             sprite: Sprite {
                 color: Color::rgba(0., 0.25, 1., 0.3),
-                custom_size: Some(Vec2::new(128., 128.)),
+                custom_size: Some(Vec2::new(1., 1.)),
                 ..default()
             },
             transform: Transform::from_xyz(0., 0., DepthLayer::Selection.z()),

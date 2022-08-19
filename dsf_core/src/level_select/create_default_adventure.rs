@@ -56,7 +56,7 @@ pub fn create_default_adventure() {
 fn level_files() -> Vec<String> {
     fs::read_dir(get_levels_dir())
         .expect("Failed to read contents of the levels directory.")
-        .map(|file| {
+        .filter_map(|file| {
             if let Ok(file) = file {
                 if file.path().is_file() {
                     Some(
@@ -74,6 +74,5 @@ fn level_files() -> Vec<String> {
                 None
             }
         })
-        .flatten()
         .collect()
 }

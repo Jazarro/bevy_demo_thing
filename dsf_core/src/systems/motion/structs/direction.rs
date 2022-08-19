@@ -3,8 +3,7 @@ use std::ops::Not;
 use bevy::prelude::Vec2;
 use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Copy, Debug, Default, Deserialize, Serialize, PartialEq)]
-#[serde(deny_unknown_fields)]
+#[derive(Deserialize, Serialize, Default, Copy, Clone, Debug, PartialEq)]
 pub struct Direction2D {
     pub x: Direction1D,
     pub y: Direction1D,
@@ -41,8 +40,7 @@ impl Direction2D {
     }
 }
 
-#[derive(Clone, Copy, Debug, Deserialize, Serialize, PartialEq)]
-#[serde(deny_unknown_fields)]
+#[derive(Deserialize, Serialize, Copy, Clone, Debug, PartialEq)]
 pub enum Direction1D {
     Negative,
     Positive,

@@ -15,10 +15,7 @@ pub fn play_sfx(
     assets: Res<AssetStorage>,
     channel_music: Res<AudioChannel<MusicChannel>>,
     channel_sfx: Res<AudioChannel<SfxChannel>>,
-    _config: Res<AudioSettings>,
 ) {
-    // channel_music.set_volume(0.1);
-    // channel_sfx.set_volume(0.3);
     for event in events.iter() {
         debug!("Received sound event: {:?}", event);
         match event {
@@ -73,5 +70,16 @@ pub fn play_sfx(
         } else {
             *last_position = state.position().unwrap_or(-1.);
         }
+    }
+}
+
+pub fn change_audio_settings(
+    resource: Res<AudioSettings>,
+    channel_music: Res<AudioChannel<MusicChannel>>,
+    channel_sfx: Res<AudioChannel<SfxChannel>>,
+) {
+    if resource.is_changed() {
+        channel_music.set_volume(resource.music_volume.unwrap_or(0.));
+        channel_sfx.set_volume(resource.sfx_volume.unwrap_or(0.));
     }
 }

@@ -5,5 +5,5 @@
 // If this file exists in .userdata/settings/, those values will be used instead of these.
 (
     music_volume: Some(0.5),
-    sound_effects_volume: Some(0.8),
+    sfx_volume: Some(0.8),
 )

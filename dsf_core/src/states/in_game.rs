@@ -4,7 +4,9 @@ use iyes_loopless::prelude::*;
 
 use crate::camera::camera_systems::camera_follow_focal_point;
 use crate::camera::create_camera::create_camera;
-use crate::levels::load_level_system::load_level;
+use crate::loading::levels::debug_frames::build_frames;
+use crate::loading::levels::keys_on_door::add_key_displays_to_door;
+use crate::loading::levels::load_level_system::load_level;
 use crate::states::{back_on_escape, delete_all_entities, start_music, AppState};
 use crate::systems::animations::walk_anim::animate_walking;
 use crate::systems::background_anim::{anim_background_eyes, anim_background_heads};
@@ -52,6 +54,8 @@ impl Plugin for InGameState {
                     .run_on_event::<LevelLoaded>()
                     .with_system(set_revolving_controllers)
                     .with_system(setup_hud)
+                    .with_system(add_key_displays_to_door)
+                    .with_system(build_frames)
                     .into(),
             )
             .add_stage_before(Update, "set_intent", SystemStage::parallel())

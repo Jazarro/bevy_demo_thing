@@ -3,7 +3,7 @@
     map: {
         "Player":(
             depth: Player,
-            dimens: ( 2, 2 ),
+            dimens: ((2, 2)),
             unique: true,
             mandatory: true,
             asset: (PlayerAnims, 0),
@@ -13,7 +13,7 @@
         ),
         "Block1":(
             depth: Blocks,
-            dimens: ( 1, 1 ),
+            dimens: ((1, 1)),
             unique: false,
             mandatory: false,
             collision: (
@@ -26,7 +26,7 @@
         ),
         "Block2":(
             depth: Blocks,
-            dimens: ( 1, 1 ),
+            dimens: ((1, 1)),
             unique: false,
             mandatory: false,
             collision: (
@@ -39,7 +39,7 @@
         ),
         "TrapWall":(
             depth: Blocks,
-            dimens: ( 1, 1 ),
+            dimens: ((1, 1)),
             unique: false,
             mandatory: false,
             collision: (
@@ -53,7 +53,7 @@
         ),
         "RevolvingDoorFacingNegative":(
             depth: Blocks,
-            dimens: ( 2, 1 ),
+            dimens: ((2, 1)),
             unique: false,
             mandatory: false,
             collision: (
@@ -67,7 +67,7 @@
         ),
         "RevolvingDoorFacingPositive":(
             depth: Blocks,
-            dimens: ( 2, 1 ),
+            dimens: ((2, 1)),
             unique: false,
             mandatory: false,
             collision: (
@@ -81,7 +81,7 @@
         ),
         "RevolvingDoorNonColliding":(
             depth: Blocks,
-            dimens: ( 2, 1 ),
+            dimens: ((2, 1)),
             unique: false,
             mandatory: false,
             collision: (
@@ -95,7 +95,7 @@
         ),
         "Ladder":(
             depth: Blocks,
-            dimens: ( 2, 1 ),
+            dimens: ((2, 1)),
             unique: false,
             mandatory: false,
             climbable: true,
@@ -109,7 +109,7 @@
         ),
         "Key":(
             depth: FloatingBlocks,
-            dimens: ( 2, 2 ),
+            dimens: ((2, 2)),
             unique: false,
             mandatory: false,
             collision: (
@@ -123,7 +123,7 @@
         ),
         "ToolPickaxe":(
             depth: FloatingBlocks,
-            dimens: ( 2, 2 ),
+            dimens: ((2, 2)),
             unique: false,
             mandatory: false,
             collision: (
@@ -137,7 +137,7 @@
         ),
         "ToolShovel":(
             depth: FloatingBlocks,
-            dimens: ( 2, 2 ),
+            dimens: ((2, 2)),
             unique: false,
             mandatory: false,
             collision: (
@@ -151,7 +151,7 @@
         ),
         "ToolDrill":(
             depth: FloatingBlocks,
-            dimens: ( 2, 2 ),
+            dimens: ((2, 2)),
             unique: false,
             mandatory: false,
             collision: (
@@ -165,7 +165,7 @@
         ),
         "ToolHammer":(
             depth: FloatingBlocks,
-            dimens: ( 2, 2 ),
+            dimens: ((2, 2)),
             unique: false,
             mandatory: false,
             collision: (
@@ -179,7 +179,7 @@
         ),
         "ToolKnife":(
             depth: FloatingBlocks,
-            dimens: ( 2, 2 ),
+            dimens: ((2, 2)),
             unique: false,
             mandatory: false,
             collision: (
@@ -193,7 +193,7 @@
         ),
         "Door":(
             depth: Blocks,
-            dimens: ( 4, 4 ),
+            dimens: ((4, 4)),
             unique: true,
             mandatory: true,
             collision: (
@@ -207,7 +207,7 @@
         ),
         "Spawner":(
             depth: Blocks,
-            dimens: ( 2, 3 ),
+            dimens: ((2, 3)),
             unique: false,
             mandatory: false,
             collision: (

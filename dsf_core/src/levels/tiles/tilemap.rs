@@ -6,6 +6,7 @@ use serde::{Deserialize, Serialize};
 use crate::levels::level_save::LevelSave;
 use crate::levels::tiles::tile_defs::{TileDefinition, TileDefinitions};
 use crate::levels::world_bounds::WorldBounds;
+use crate::systems::motion::structs::dimens::Dimens;
 use crate::systems::motion::structs::pos::Pos;
 
 #[derive(Debug, Default, Clone)]
@@ -123,19 +124,19 @@ impl TileMap {
     #[must_use]
     pub fn get_actual_pos(&self, pos: &Pos) -> Option<Pos> {
         let wrapped_pos = self.wrapped(pos);
-        match self.tiles.get(&pos) {
+        match self.tiles.get(pos) {
             Some(Tile::TileDefKey(_)) => Some(wrapped_pos),
             Some(Tile::Dummy(anchor_pos)) => Some(*anchor_pos),
             _ => None,
         }
     }
 
-    pub fn put_tile(&mut self, pos: &Pos, tile_def_key: String, dimensions: IVec2) {
+    pub fn put_tile(&mut self, pos: &Pos, dimens: Dimens, tile_def_key: String) {
         let wrapped_pos = self.wrapped(pos);
         self.tiles
             .insert(wrapped_pos, Tile::TileDefKey(tile_def_key));
-        (0..dimensions.x).for_each(|x| {
-            (0..dimensions.y).for_each(|y| {
+        (0..dimens.x).for_each(|x| {
+            (0..dimens.y).for_each(|y| {
                 if x != 0 || y != 0 {
                     self.tiles
                         .insert(wrapped_pos.append_xy(x, y), Tile::Dummy(wrapped_pos));

@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use std::time::Duration;
 
-#[derive(Clone, Default, Component)]
+#[derive(Component, Default, Clone)]
 pub struct AnimationTimer {
     pub timer: Timer,
     pub index: usize,
@@ -21,12 +21,13 @@ impl AnimationTimer {
 
     pub fn tick(&mut self, delta: Duration) -> usize {
         self.timer.tick(delta);
-        self.index =
-            (self.index + self.timer.times_finished() as usize).rem_euclid(if self.ping_pong {
+        self.index = (self.index + self.timer.times_finished_this_tick() as usize).rem_euclid(
+            if self.ping_pong {
                 self.nr_frames * 2
             } else {
                 self.nr_frames
-            });
+            },
+        );
         if self.index < self.nr_frames {
             self.index
         } else {

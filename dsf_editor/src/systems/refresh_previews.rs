@@ -1,13 +1,14 @@
+use bevy::prelude::*;
+
+use dsf_core::levels::tiles::tile_defs::Archetype;
+use dsf_core::loading::assets::AssetStorage;
+use dsf_core::systems::motion::structs::direction::Direction1D;
+
 use crate::components::cursor::PreviewGhostTag;
 use crate::components::painted_tile::PaintedTile;
 use crate::resources::blueprint::Blueprint;
 use crate::resources::level_edit::{LevelEdit, PlaceTileDryRun};
 use crate::resources::status::editor_status::EditorStatus;
-use bevy::prelude::*;
-use dsf_core::levels::load_level_system::load_transform;
-use dsf_core::levels::tiles::tile_defs::Archetype;
-use dsf_core::loading::assets::AssetStorage;
-use dsf_core::systems::motion::structs::direction::Direction1D;
 
 /// Send this through the event bus in order to trigger a complete refresh of the previews.
 #[derive(Debug, Copy, Clone)]
@@ -63,19 +64,25 @@ pub fn refresh_previews(
     blueprint_dry_run
         .to_be_added
         .iter()
-        .for_each(|(pos, key, dimens)| {
-            let tile_def = level_edit.tile_map.tile_defs.get(&key);
+        .for_each(|(pos, _, key)| {
+            let tile_def = level_edit.tile_map.tile_defs.get(key);
             let atlas = storage.get_atlas(&tile_def.get_preview().0);
-            let flip = tile_def.archetype == Some(Archetype::RevolvingDoor(Direction1D::Negative));
+            let flip_x =
+                tile_def.archetype == Some(Archetype::RevolvingDoor(Direction1D::Negative));
             commands
                 .spawn()
                 .insert_bundle(SpriteSheetBundle {
                     texture_atlas: atlas,
-                    transform: load_transform(pos, &dimens, &tile_def.depth),
+                    transform: Transform::from_xyz(
+                        pos.x as f32 + tile_def.dimens.x as f32 * 0.5,
+                        pos.y as f32 + tile_def.dimens.y as f32 * 0.5,
+                        tile_def.depth.z(),
+                    ),
                     sprite: TextureAtlasSprite {
                         index: tile_def.get_preview().1,
-                        flip_x: flip,
+                        flip_x,
                         color: Color::rgba(0.5, 0.5, 0.5, 0.7),
+                        custom_size: Some(tile_def.dimens.as_vec2()),
                         ..default()
                     },
                     ..default()

@@ -1,8 +1,8 @@
+use bevy::prelude::*;
+
 use crate::systems::animations::structs::AnimationTimer;
 use crate::systems::enemy::spawner::Enemy;
 use crate::systems::motion::move_enemy::EnemyAi;
-use bevy::prelude::*;
-
 use crate::systems::motion::structs::player::Player;
 use crate::systems::motion::structs::steering::Steering;
 use crate::systems::motion::structs::steering_intent::SteeringIntent;

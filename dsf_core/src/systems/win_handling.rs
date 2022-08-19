@@ -10,6 +10,7 @@ use crate::levels::tiles::objects::ExitDoor;
 use crate::loading::assets::SoundType;
 use crate::states::AppState;
 use crate::systems::animations::structs::AnimationTimer;
+use crate::systems::motion::structs::coords::Coords;
 use crate::systems::motion::structs::player::Player;
 use crate::util::files::get_levels_dir;
 
@@ -21,8 +22,8 @@ pub struct WinResource {
     pub state: WinState,
 }
 
-impl WinResource {
-    pub fn new() -> Self {
+impl Default for WinResource {
+    fn default() -> Self {
         WinResource {
             state: WinState::Queued,
         }
@@ -48,7 +49,7 @@ pub fn handle_win_queued(
         (&mut TextureAtlasSprite, &mut Transform, &mut AnimationTimer),
         With<Player>,
     >,
-    query_doors: Query<&ExitDoor>,
+    query_doors: Query<&Coords, With<ExitDoor>>,
 ) {
     if let WinState::Queued = win.state {
         audio.send(SoundEvent::Sfx(SoundType::Win, true));
@@ -108,7 +109,7 @@ pub fn handle_win_player(
             sprite.index = anim.tick(time.delta());
             sprite.color = Color::rgba(1., 1., 1., 1. - timer.percent());
             let scale = 1. - (timer.percent() / 2.);
-            transform.scale = Vec3::new(scale / 128., scale / 128., 1.);
+            transform.scale = Vec3::new(scale, scale, 1.);
         }
     }
 }

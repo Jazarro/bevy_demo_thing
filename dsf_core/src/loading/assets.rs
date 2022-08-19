@@ -70,14 +70,8 @@ impl AssetStorage {
 }
 
 /// Contains both a handle to the sprite sheet and the number of the sprite on the sheet.
-#[derive(Debug, Copy, Clone, Deserialize, Serialize)]
+#[derive(Debug, Default, Copy, Clone, Deserialize, Serialize)]
 pub struct AssetType(pub SpriteType, pub usize);
-
-impl Default for AssetType {
-    fn default() -> Self {
-        AssetType(SpriteType::default(), 0)
-    }
-}
 
 #[derive(Debug, Copy, Clone, Deserialize, Serialize, PartialEq, Eq, Hash)]
 pub enum SpriteType {

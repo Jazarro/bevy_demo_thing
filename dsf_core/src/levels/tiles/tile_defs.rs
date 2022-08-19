@@ -4,6 +4,7 @@ use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
 
 use crate::loading::assets::{AssetType, SpriteType};
+use crate::systems::motion::structs::dimens::Dimens;
 use crate::systems::motion::structs::direction::Direction1D;
 
 /// This resource stores tile definitions. It is used in both the level editor and the actual game.
@@ -54,7 +55,7 @@ pub struct TileDefinition {
     /// front of this tile?
     pub depth: DepthLayer,
     /// How wide and high is the tile?
-    pub dimens: IVec2,
+    pub dimens: Dimens,
     /// This tile is unique in the level. Only one tile with this definition can appear in the level.
     /// Examples are the player and the exit door.
     pub unique: bool,
@@ -70,8 +71,8 @@ pub struct TileDefinition {
     pub asset: Option<AssetType>,
     /// Is mainly used in the editor. This is there to guarantee that we can have still-image
     /// representations of any tile, so it can be displayed in the editor GUI.
-    pub preview_asset: Option<AssetType>,
     // TODO: Remove Option, because this should always be present?
+    pub preview_asset: Option<AssetType>,
     /// Use this if there are any special components or child-entities that should be attached to
     /// this tile.
     pub archetype: Option<Archetype>,
@@ -85,7 +86,7 @@ impl TileDefinition {
     pub fn fallback() -> Self {
         TileDefinition {
             depth: DepthLayer::Blocks,
-            dimens: IVec2::new(1, 1),
+            dimens: Dimens::new(1, 1),
             unique: false,
             mandatory: false,
             climbable: false,
@@ -197,6 +198,7 @@ impl DepthLayer {
 ///
 /// Use a different archetype to attach special components or sub-entities to an entity.
 pub enum Archetype {
+    // TODO: Should I rename this, because there already is an Archetype concept in bevy?
     /// This tile is the spawn location for the player character.
     /// A special Player component must be attached to this entity.
     /// For debug purposes, some child entities may be attached to the player.

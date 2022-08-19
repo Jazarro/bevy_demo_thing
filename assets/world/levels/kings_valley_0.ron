@@ -1,8 +1,8 @@
 (
-    world_bounds: (
+    world_bounds: ((
         pos: ((-20, -14)),
         dimens: ((32, 24)),
-    ),
+    )),
     tiles: {
         ((-20, -14)): "Block1",
         ((-20, -13)): "Block1",

@@ -3,7 +3,7 @@ use crate::resources::status::editor_status::EditorStatus;
 use bevy::prelude::*;
 use dsf_core::level_select::structs::LevelSelectionInstruction;
 use dsf_core::levels::level_save::LevelSave;
-use dsf_core::levels::load_level_system::{add_plain_background, load_tile_definitions};
+use dsf_core::loading::levels::load_level_system::{add_plain_background, load_tile_definitions};
 use dsf_core::util::files::load_level_file;
 
 /// Perform setup that should be executed both upon starting and upon resuming the State.

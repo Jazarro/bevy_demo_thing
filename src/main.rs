@@ -45,7 +45,7 @@ fn main() {
         // })
         .insert_resource(ClearColor(Color::rgb(0.1, 0.1, 0.1)))
         .insert_resource(WindowDescriptor {
-            title: "Dwarf Seeks Fortune!".to_string(),
+            title: "Dwarf Seeks Fortune".to_string(),
             mode: WindowMode::BorderlessFullscreen,
             ..default()
         })

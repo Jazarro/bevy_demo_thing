@@ -20,13 +20,13 @@ pub fn setup_alt_menu(
     assets: Res<AssetServer>,
     progression: Res<Progression>,
 ) {
-    commands.spawn_bundle(OrthographicCameraBundle::new_2d());
+    commands.spawn_bundle(Camera2dBundle::default());
 
     let mut buttons = vec![BUTTON_START.to_string(), BUTTON_EXIT.to_string()];
     if progression.current_level > 0 {
         buttons.insert(0, BUTTON_CONT.to_string());
     }
-    let container = commands.spawn_bundle(TransformBundle::default()).id();
+    let container = commands.spawn_bundle(SpatialBundle::default()).id();
     for i in 0..buttons.len() {
         add_btn(&mut commands, &assets, &buttons, i, container);
     }

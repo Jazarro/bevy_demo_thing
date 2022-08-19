@@ -23,26 +23,6 @@ pub struct MusicChannel;
 #[derive(Component, Default, Clone)]
 pub struct SfxChannel;
 
-// pub struct ChannelAudioState<T> {
-//     stopped: bool,
-//     paused: bool,
-//     loop_started: bool,
-//     volume: f32,
-//     _marker: PhantomData<T>,
-// }
-//
-// impl<T> Default for ChannelAudioState<T> {
-//     fn default() -> Self {
-//         ChannelAudioState {
-//             volume: 1.0,
-//             stopped: true,
-//             loop_started: false,
-//             paused: false,
-//             _marker: PhantomData::<T>::default(),
-//         }
-//     }
-// }
-
 #[derive(Default)]
 pub struct AudioResource {
     /// Sound effect that has interrupted the music. After this is done playing, the music should resume.

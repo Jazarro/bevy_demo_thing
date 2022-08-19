@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 
 use crate::config::settings::debug_settings::DebugSettings;
+use crate::systems::motion::structs::coords::Coords;
 use crate::systems::motion::structs::player::Player;
 use crate::systems::motion::structs::steering::Steering;
 use crate::systems::rewind::structs::{CurrentState, History, Rewind};
@@ -37,16 +38,16 @@ pub fn rewind_control_system(
 pub fn rewind_system(
     rewind: Res<Rewind>,
     mut history: ResMut<History>,
-    mut query: Query<(&mut Transform, &mut Steering), With<Player>>,
+    mut query: Query<(&mut Transform, &mut Steering, &mut Coords), With<Player>>,
 ) {
     if rewind.is_ready() {
         if let Some(frame) = history.pop_frame() {
             info!("Rewinding player to {:?}", frame);
-            for (mut transform, mut steering) in query.iter_mut() {
-                let (centered_x, centered_y) = steering.to_centered_coords(frame.player_position);
+            for (mut transform, mut steering, mut coords) in query.iter_mut() {
+                let (centered_x, centered_y) = coords.to_centered_coords(frame.player_position);
                 transform.translation.x = centered_x;
                 transform.translation.y = centered_y;
-                steering.pos = frame.player_position;
+                coords.pos = frame.player_position;
                 steering.destination = frame.player_position;
             }
         }

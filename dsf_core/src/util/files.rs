@@ -74,7 +74,6 @@ where
     S: Serialize,
 {
     let pretty_config = ron::ser::PrettyConfig::default()
-        .decimal_floats(true)
         // .indentor("\t".to_string())
         .new_line("\n".to_string());
     let mut buf = Vec::new();

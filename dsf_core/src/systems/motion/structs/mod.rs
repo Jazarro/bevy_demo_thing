@@ -1,3 +1,5 @@
+pub mod coords;
+pub mod dimens;
 pub mod direction;
 pub mod player;
 pub mod pos;

@@ -18,7 +18,7 @@ pub fn selection_system(
         if width == 1 && height == 1 {
             transform.scale = Vec3::new(0., 0., 1.0);
         } else {
-            transform.scale = Vec3::new(width as f32 / 128., height as f32 / 128., 1.0);
+            transform.scale = Vec3::new(width as f32, height as f32, 1.0);
         }
 
         transform.translation = Vec3::new(

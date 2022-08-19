@@ -17,7 +17,8 @@ pub fn perform_blinking_animation(
             } else {
                 config.cursor_blink_off_time
             };
-            let scale_factor = if cursor.is_visible { 1.0 / 128. } else { 0.0 };
+            // TODO: Use visibility component instead of setting scale to zero.
+            let scale_factor = if cursor.is_visible { 1.0 } else { 0.0 };
             transform.scale = Vec3::new(scale_factor, scale_factor, 1.0);
         }
         cursor.blink_cooldown -= time.delta_seconds();

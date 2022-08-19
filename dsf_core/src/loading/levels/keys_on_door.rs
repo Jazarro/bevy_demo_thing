@@ -1,22 +1,21 @@
 use bevy::prelude::*;
 
-use crate::levels::tiles::objects::KeyDisplay;
+use crate::levels::tiles::objects::{ExitDoor, Key, KeyDisplay};
 use crate::levels::tiles::tile_defs::DepthLayer;
 use crate::loading::assets::{AssetStorage, SpriteType};
-use crate::systems::motion::structs::pos::Pos;
+use crate::systems::motion::structs::coords::Coords;
 use crate::systems::win_checking::WinCondition;
 
 pub fn add_key_displays_to_door(
-    commands: &mut Commands,
-    door_pos: Pos,
-    win_condition: &WinCondition,
-    storage: &AssetStorage,
+    mut commands: Commands,
+    storage: Res<AssetStorage>,
+    mut win_condition: ResMut<WinCondition>,
+    query_keys: Query<&Coords, With<Key>>,
+    query_door: Query<&Coords, With<ExitDoor>>,
 ) {
-    win_condition
-        .keys
-        .iter()
-        .enumerate()
-        .for_each(|(index, key)| {
+    if let Some(door_coords) = query_door.iter().next() {
+        for (index, key_coords) in query_keys.iter().enumerate() {
+            win_condition.add_key(key_coords.pos);
             // Temporary bit of code to arrange the key displays on the door in a
             // visually pleasing manner. Rewrite this later, when we know exactly what we
             // want to do with the door.
@@ -38,8 +37,8 @@ pub fn add_key_displays_to_door(
             let mut transform = Transform::default();
             let x_offset = i % 4;
             let y_offset = i / 4;
-            transform.translation.x = door_pos.x as f32 + x_offset as f32 + 0.5;
-            transform.translation.y = door_pos.y as f32 + y_offset as f32 + 0.5;
+            transform.translation.x = door_coords.pos.x as f32 + x_offset as f32 + 0.5;
+            transform.translation.y = door_coords.pos.y as f32 + y_offset as f32 + 0.5;
             transform.translation.z = DepthLayer::FloatingBlocks.z();
             transform.scale = Vec3::new(1. / 256., 1. / 256., 1.0);
             let texture_atlas = storage.get_atlas(&SpriteType::Tools);
@@ -53,6 +52,7 @@ pub fn add_key_displays_to_door(
                     },
                     ..default()
                 })
-                .insert(KeyDisplay::new(*key));
-        });
+                .insert(KeyDisplay::new(key_coords.pos));
+        }
+    }
 }

@@ -41,12 +41,12 @@ pub fn handle_window(mut keys: ResMut<Input<KeyCode>>, mut windows: ResMut<Windo
 //                         .delete(cam)
 //                         .expect("Trying to resize, but failed to delete camera.");
 //                 }
-//                 if screen_dimens.width() > f32::EPSILON && screen_dimens.height() > f32::EPSILON {
+//                 if screen_dimens.x() > f32::EPSILON && screen_dimens.y() > f32::EPSILON {
 //                     entities
 //                         .build_entity()
 //                         .with(Parent { entity: frame }, &mut parents)
 //                         .with(
-//                             Camera::standard_2d(screen_dimens.width(), screen_dimens.height()),
+//                             Camera::standard_2d(screen_dimens.x(), screen_dimens.y()),
 //                             &mut cameras,
 //                         )
 //                         .with(Transform::default(), &mut transforms)

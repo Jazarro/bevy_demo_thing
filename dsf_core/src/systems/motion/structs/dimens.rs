@@ -4,33 +4,33 @@ use std::ops::{Add, Deref, DerefMut, Sub};
 use bevy::prelude::IVec2;
 use serde::{Deserialize, Serialize};
 
-/// Defines a set of discrete grid coordinates.
+/// Defines a width and height in terms of discrete grid coordinates.
 #[derive(Deserialize, Serialize, Default, Copy, Clone, Debug, PartialEq, Eq, Hash)]
-pub struct Pos(IVec2);
+pub struct Dimens(IVec2);
 
-impl Pos {
+impl Dimens {
     #[must_use]
     pub fn new(x: i32, y: i32) -> Self {
-        Pos(IVec2::new(x, y))
+        Dimens(IVec2::new(x, y))
     }
 
     #[must_use]
     pub fn append_x(self, x: i32) -> Self {
-        Pos::new(self.x + x, self.y)
+        Dimens::new(self.x + x, self.y)
     }
 
     #[must_use]
     pub fn append_y(self, y: i32) -> Self {
-        Pos::new(self.x, self.y + y)
+        Dimens::new(self.x, self.y + y)
     }
 
     #[must_use]
     pub fn append_xy(self, x: i32, y: i32) -> Self {
-        Pos::new(self.x + x, self.y + y)
+        Dimens::new(self.x + x, self.y + y)
     }
 }
 
-impl Deref for Pos {
+impl Deref for Dimens {
     type Target = IVec2;
 
     fn deref(&self) -> &Self::Target {
@@ -38,17 +38,14 @@ impl Deref for Pos {
     }
 }
 
-impl DerefMut for Pos {
+impl DerefMut for Dimens {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.0
     }
 }
 
 /// Order by x first, then y.
-///
-/// This is implemented purely to make it possible to save level and adventure files in a
-/// deterministic way.
-impl PartialOrd<Self> for Pos {
+impl PartialOrd<Self> for Dimens {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         if self.x < other.x {
             Some(Ordering::Less)
@@ -64,24 +61,24 @@ impl PartialOrd<Self> for Pos {
     }
 }
 
-impl Ord for Pos {
+impl Ord for Dimens {
     fn cmp(&self, other: &Self) -> Ordering {
         self.partial_cmp(other).unwrap()
     }
 }
 
-impl Sub for Pos {
-    type Output = Pos;
+impl Sub for Dimens {
+    type Output = Dimens;
 
-    fn sub(self, other: Pos) -> Pos {
-        Pos::new(self.x - other.x, self.y - other.y)
+    fn sub(self, other: Dimens) -> Dimens {
+        Dimens::new(self.x - other.x, self.y - other.y)
     }
 }
 
-impl Add for Pos {
-    type Output = Pos;
+impl Add for Dimens {
+    type Output = Dimens;
 
-    fn add(self, other: Pos) -> Pos {
-        Pos::new(self.x + other.x, self.y + other.y)
+    fn add(self, other: Dimens) -> Dimens {
+        Dimens::new(self.x + other.x, self.y + other.y)
     }
 }

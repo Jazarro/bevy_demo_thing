@@ -1,9 +1,7 @@
 use bevy::prelude::*;
 
-use dsf_core::levels::load_level_system::load_transform;
-use dsf_core::levels::tiles::tile_defs::Archetype;
 use dsf_core::loading::assets::AssetStorage;
-use dsf_core::systems::motion::structs::direction::Direction1D;
+use dsf_core::loading::entities::inflate::inflate_sprite_sheet;
 
 use crate::components::painted_tile::PaintedTile;
 use crate::resources::level_edit::LevelEdit;
@@ -38,20 +36,14 @@ pub fn tile_paint_system(
             (dirty_pos, tile_def)
         })
         .for_each(|(pos, tile_def)| {
-            let atlas = storage.get_atlas(&tile_def.get_preview().0);
-            let flip = tile_def.archetype == Some(Archetype::RevolvingDoor(Direction1D::Negative));
             commands
                 .spawn()
-                .insert_bundle(SpriteSheetBundle {
-                    texture_atlas: atlas,
-                    transform: load_transform(&pos, &tile_def.dimens, &tile_def.depth),
-                    sprite: TextureAtlasSprite {
-                        index: tile_def.get_preview().1,
-                        flip_x: flip,
-                        ..default()
-                    },
-                    ..default()
-                })
+                .insert_bundle(inflate_sprite_sheet(
+                    pos,
+                    tile_def.get_preview(),
+                    tile_def,
+                    &storage,
+                ))
                 .insert(PaintedTile::new(pos));
         });
 }

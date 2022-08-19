@@ -35,7 +35,7 @@ impl Blueprint {
     pub fn from_placing_tiles(status: &EditorStatus, level_edit: &LevelEdit) -> Self {
         let key = status.brush.get_key().as_ref();
         let tile_def = key.map(|key| level_edit.tile_map.tile_defs.get(key));
-        let brush_dimens = tile_def.map_or_else(|| IVec2::new(1, 1), |def| def.dimens);
+        let brush_dimens = tile_def.map_or_else(|| IVec2::new(1, 1), |def| *def.dimens);
         let selection_dimens = (*status).selection.dimens();
         let mut blueprint = Blueprint::new(selection_dimens);
         for x in (0..(selection_dimens.x)).step_by(brush_dimens.x as usize) {

@@ -12,8 +12,8 @@ pub fn update_background(
     for (mut transform, mut sprite) in query.iter_mut() {
         // TODO: set scale requires knowledge about dimensions of sprite.
         sprite.custom_size = Some(Vec2::new(
-            128. * level_edit.bounds().width() as f32,
-            128. * level_edit.bounds().height() as f32,
+            level_edit.bounds().width() as f32,
+            level_edit.bounds().height() as f32,
         ));
         transform.translation = Vec3::new(
             level_edit.bounds().x() as f32 + (level_edit.bounds().width() as f32 * 0.5),

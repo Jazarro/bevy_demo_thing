@@ -1,6 +1,10 @@
+use std::ops::{Deref, DerefMut};
+
 use bevy::prelude::IVec2;
 use serde::{Deserialize, Serialize};
 
+use crate::systems::motion::structs::coords::Coords;
+use crate::systems::motion::structs::dimens::Dimens;
 use crate::systems::motion::structs::pos::Pos;
 
 /// The minimum dimension (both horizontal and vertical) that the world bounds should have.
@@ -12,10 +16,7 @@ use crate::systems::motion::structs::pos::Pos;
 const MIN_DIMENSION: i32 = 2;
 
 #[derive(Debug, Deserialize, Serialize, Clone, Copy)]
-pub struct WorldBounds {
-    pub pos: Pos,
-    pub dimens: Pos,
-}
+pub struct WorldBounds(Coords);
 
 impl Default for WorldBounds {
     fn default() -> Self {
@@ -25,10 +26,7 @@ impl Default for WorldBounds {
 
 impl WorldBounds {
     pub fn new(x: i32, y: i32, width: i32, height: i32) -> Self {
-        WorldBounds {
-            pos: Pos::new(x, y),
-            dimens: Pos::new(width, height),
-        }
+        WorldBounds(Coords::new(Pos::new(x, y), Dimens::new(width, height)))
     }
 
     /// Inclusive lower bound.
@@ -132,5 +130,19 @@ impl WorldBounds {
             (pos.x - self.x()).rem_euclid(self.width()) + self.x(),
             (pos.y - self.y()).rem_euclid(self.height()) + self.y(),
         )
+    }
+}
+
+impl Deref for WorldBounds {
+    type Target = Coords;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl DerefMut for WorldBounds {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
     }
 }

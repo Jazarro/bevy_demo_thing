@@ -1,9 +1,11 @@
-use bevy::prelude::*;
 use std::collections::HashSet;
+
+use bevy::prelude::*;
 
 use crate::audio::sound_event::SoundEvent;
 use crate::levels::tiles::objects::{ExitDoor, Key, KeyDisplay};
 use crate::loading::assets::SoundType::{PickupKey, PickupLastKey};
+use crate::systems::motion::structs::coords::Coords;
 use crate::systems::motion::structs::player::Player;
 use crate::systems::motion::structs::pos::Pos;
 use crate::systems::motion::structs::steering::Steering;
@@ -56,16 +58,16 @@ pub fn key_collect_system(
     mut commands: Commands,
     mut audio: EventWriter<SoundEvent>,
     mut win: ResMut<WinCondition>,
-    query_player: Query<(&Player, &Steering, &Transform)>,
-    query_keys: Query<(&Key, &Transform, Entity)>,
+    query_player: Query<(&Player, &Coords, &Transform)>,
+    query_keys: Query<(&Coords, &Transform, Entity), With<Key>>,
     query_key_displays: Query<(&KeyDisplay, Entity)>,
 ) {
     let player_collider = query_player
         .iter()
-        .map(|(_, steering, transform)| {
+        .map(|(_, coords, transform)| {
             (
                 Vec2::new(transform.translation.x, transform.translation.y),
-                Vec2::new(steering.dimens.x as f32, steering.dimens.y as f32),
+                Vec2::new(coords.dimens.x as f32, coords.dimens.y as f32),
             )
         })
         .next();
@@ -82,8 +84,8 @@ pub fn key_collect_system(
             })
             .map(|(key, _, entity)| (key, entity))
             .next();
-        if let Some((key, key_entity)) = collected_key {
-            win.set_key_collected(key.pos);
+        if let Some((coords, key_entity)) = collected_key {
+            win.set_key_collected(coords.pos);
             let sound_event = if win.all_keys_collected() {
                 SoundEvent::Sfx(PickupLastKey, true)
             } else {
@@ -92,7 +94,7 @@ pub fn key_collect_system(
             audio.send(sound_event);
             commands.entity(key_entity).despawn_recursive();
             for (key_display, display_entity) in query_key_displays.iter() {
-                if key_display.pos == key.pos {
+                if key_display.pos == coords.pos {
                     commands.entity(display_entity).despawn_recursive();
                 }
             }
@@ -105,16 +107,16 @@ pub fn key_collect_system(
 pub fn check_if_won(
     mut commands: Commands,
     win: Res<WinCondition>,
-    query_player: Query<&Steering, With<Player>>,
-    query_doors: Query<&ExitDoor>,
+    query_player: Query<(&Steering, &Coords), With<Player>>,
+    query_doors: Query<&Coords, With<ExitDoor>>,
 ) {
-    if let Ok(player) = query_player.get_single() {
-        if !win.all_keys_collected() || !player.is_grounded() {
+    if let Ok((player_steering, player_coords)) = query_player.get_single() {
+        if !win.all_keys_collected() || !player_steering.is_grounded() {
             return;
         }
-        for door in query_doors.iter() {
-            if player.overlaps_rect(&door.pos, &door.dimens) {
-                commands.insert_resource(WinResource::new());
+        for door_coords in query_doors.iter() {
+            if player_coords.overlaps(door_coords) {
+                commands.insert_resource(WinResource::default());
             }
         }
     }

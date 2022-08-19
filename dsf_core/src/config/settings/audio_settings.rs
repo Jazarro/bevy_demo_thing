@@ -18,7 +18,7 @@ pub struct AudioSettings {
     /// What volume the sound effects should be played at. If this value is None, the music will
     /// not be played at all.
     /// The volume should be a value in the range [0.0, 1.0].
-    pub sound_effects_volume: Option<f32>,
+    pub sfx_volume: Option<f32>,
 }
 
 impl AudioSettings {
@@ -32,7 +32,7 @@ impl AudioSettings {
     /// Add the given delta to the current sound effects volume and write the `SoundConfig` to a user
     /// settings file.
     pub fn add_to_sfx_volume(&mut self, delta: f32) {
-        self.sound_effects_volume = Self::add_volume(self.sound_effects_volume, delta);
+        self.sfx_volume = Self::add_volume(self.sfx_volume, delta);
         self.write_settings(get_user_settings_dir().join("audio.ron"));
     }
 
@@ -59,7 +59,7 @@ impl AudioSettings {
     /// Return a pretty printed representation of the sound effects volume.
     #[must_use]
     pub fn format_sfx_volume(&self) -> String {
-        Self::format_volume(self.sound_effects_volume)
+        Self::format_volume(self.sfx_volume)
     }
 
     /// Return a pretty printed representation of the given volume value.

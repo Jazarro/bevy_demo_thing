@@ -8,6 +8,7 @@ pub struct MenuButtons {
 
 #[derive(Component)]
 pub struct DsfButton(pub ButtonIndex);
+
 pub type ButtonIndex = usize;
 
 pub fn add_btn(
@@ -18,6 +19,16 @@ pub fn add_btn(
     container: Entity,
 ) {
     let container_offset = (150. * buttons.len() as f32 / 2.) - (150. / 2.);
+    let font = assets.load("fonts/square.ttf");
+    let text_style = TextStyle {
+        font,
+        font_size: 60.0,
+        color: Color::WHITE,
+    };
+    let text_alignment = TextAlignment {
+        vertical: VerticalAlign::Center,
+        horizontal: HorizontalAlign::Center,
+    };
     let btn = commands
         .spawn_bundle(SpriteBundle {
             sprite: Sprite {
@@ -32,27 +43,18 @@ pub fn add_btn(
             )),
             ..default()
         })
-        .insert(Parent(container))
         .insert(DsfButton(index))
-        .id();
-    let font = assets.load("fonts/square.ttf");
-    let text_style = TextStyle {
-        font,
-        font_size: 60.0,
-        color: Color::WHITE,
-    };
-    let text_alignment = TextAlignment {
-        vertical: VerticalAlign::Center,
-        horizontal: HorizontalAlign::Center,
-    };
-    let _btn_text = commands
-        .spawn()
-        .insert(Parent(btn))
-        .insert(DsfButton(index))
-        .insert_bundle(Text2dBundle {
-            text: Text::with_section(buttons.get(index).unwrap(), text_style, text_alignment),
-            transform: Transform::from_translation(Vec3::new(0.0, 0.0, 1.0)),
-            ..default()
+        .with_children(|parent| {
+            parent
+                .spawn()
+                .insert(DsfButton(index))
+                .insert_bundle(Text2dBundle {
+                    text: Text::from_section(buttons.get(index).unwrap(), text_style)
+                        .with_alignment(text_alignment),
+                    transform: Transform::from_translation(Vec3::new(0.0, 0.0, 1.0)),
+                    ..default()
+                });
         })
         .id();
+    commands.entity(container).push_children(&[btn]);
 }

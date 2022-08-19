@@ -7,8 +7,7 @@ use crate::systems::motion::structs::pos::Pos;
 /// Specifies how the entity intents to move. For the player, this is mostly informed by the
 /// keyboard input. For enemies, this will be set by the AI. For all entities with Steering,
 /// the SteeringSystem then actually moves the entity based on this intent.
-#[derive(Clone, Debug, Default, Deserialize, Serialize, Component)]
-#[serde(deny_unknown_fields)]
+#[derive(Component, Deserialize, Serialize, Default, Clone, Debug)]
 pub struct SteeringIntent {
     /// If a player is still holding a horizontal movement key (for instance; RIGHT) when they
     /// start climbing, they might move off the ladder after climbing 1 tile. To fix this,

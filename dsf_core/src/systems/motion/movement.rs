@@ -2,6 +2,7 @@ use bevy::prelude::*;
 
 use crate::config::movement_config::MovementConfig;
 use crate::systems::death::death_anim::Dying;
+use crate::systems::motion::structs::coords::Coords;
 use crate::systems::motion::structs::direction::Direction1D;
 use crate::systems::motion::structs::steering::Steering;
 use crate::systems::motion::structs::steering_mode::SteeringMode;
@@ -14,8 +15,8 @@ pub fn velocity_system(
     mut query: Query<(&mut Transform, &Velocity), Without<Dying>>,
 ) {
     for (mut transform, velocity) in query.iter_mut() {
-        transform.translation.x = transform.translation.x + time.delta_seconds() * velocity.x;
-        transform.translation.y = transform.translation.y + time.delta_seconds() * velocity.y;
+        transform.translation.x += time.delta_seconds() * velocity.x;
+        transform.translation.y += time.delta_seconds() * velocity.y;
     }
 }
 
@@ -27,17 +28,18 @@ pub fn movement_system(
             &mut Transform,
             &mut TextureAtlasSprite,
             &Steering,
+            &Coords,
             &mut Velocity,
         ),
         Without<Dying>,
     >,
 ) {
-    for (mut transform, mut sprite, steering, mut velocity) in query.iter_mut() {
+    for (mut transform, mut sprite, steering, coords, mut velocity) in query.iter_mut() {
         // Flip sprite if character is facing left:
         sprite.flip_x = steering.facing.x == Direction1D::Positive;
 
-        let (centered_x, centered_y) = steering.to_centered_coords(steering.pos);
-        let (desired_pos_x, desired_pos_y) = steering.to_centered_coords(steering.destination);
+        let (centered_x, centered_y) = coords.to_centered_coords(coords.pos);
+        let (desired_pos_x, desired_pos_y) = coords.to_centered_coords(steering.destination);
         match steering.mode {
             SteeringMode::Grounded => {
                 // If grounded, correct y translation and zero out y velocity.

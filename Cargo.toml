@@ -1,6 +1,6 @@
 [package]
 name = "dwarf_seeks_fortune"
-version = "0.2.0"
+version = "0.3.0"
 authors = ["Jazarro"]
 edition = "2021"
 
@@ -37,11 +37,11 @@ env_logger = "0.8.3"
 serde = { version = "1.0", features = ["derive"] }
 ron = "*"
 rand = "*"
-iyes_loopless = "0.6.*"
-bevy_kira_audio = "0.10.*"
+iyes_loopless = "0.7.*"
+bevy_kira_audio = "0.11.*"
 
 [dependencies.bevy]
-version = "0.7.*"
+version = "0.8.*"
 # Disable the default features if there are any that you do not want
 default-features = false
 features = [
